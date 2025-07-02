@@ -1,66 +1,47 @@
-## Foundry
+# ETH Piggy Bank
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+A time-locked smart contract that allows users to deposit ETH, earn yield, and withdraw funds after a lock period. Built in Solidity using Foundry.
 
-Foundry consists of:
+## Overview
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+The ETH Piggy Bank is a great trustless savings protocols with DeFi yield mechanics.
 
-## Documentation
+- ETH deposits
+- Time-locked withdrawals
+- Simulated yield generation
+- Secure smart contract development
+- Test-driven Solidity using Foundry
 
-https://book.getfoundry.sh/
+## Features
 
-## Usage
+- 💰 **Deposit ETH** into your personal piggy bank
+- ⏳ **Lock Period** of 24 hours (customizable)
+- 📈 **Simulated Yield** of 5% on deposit
+- 🔐 **One deposit per user** at a time
+- ✅ **Fully tested** using Foundry
 
-### Build
+## Getting Started
 
-```shell
-$ forge build
+### Prerequisites
+
+* Foundry installed:
+  [Install guide](https://book.getfoundry.sh/getting-started/installation)
+
+### Clone & Build
+
+```bash
+git clone https://github.com/DappCoderr/eth-piggy-bank.git
+cd eth-piggy-bank
+forge install
+forge build
+forge test
 ```
 
-### Test
+## Author
 
-```shell
-$ forge test
-```
+Built in under 4 hours by [Your Name](https://github.com/your-username)
+Inspired by DeFi protocols and ETH savings mechanics.
 
-### Format
+---
 
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Feel free to fork, contribute, or use it however you'd like.
