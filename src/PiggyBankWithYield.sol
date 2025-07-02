@@ -10,6 +10,8 @@ contract PiggyBankWithYield is ReentrancyGuard {
 
     error PIGGYBANK__INSUFFICIENT_BALANCE();
     error PIGGYBANK__DID_NOT_JOINED();
+    error PIGGYBANK__MUST_BE_GREATER_THAN_MIN_DEPOSIT();
+    error PIGGYBANK__TRANSFER_FAIL();
 
     uint256 private constant MINIMUM_DEPOSIT = 0.005 ether;
 
@@ -19,9 +21,13 @@ contract PiggyBankWithYield is ReentrancyGuard {
     mapping(address => bool) public hasDeposited;
 
     function deposit() external payable {
-        require(msg.value > MINIMUM_DEPOSIT, "You must send some ether");
+        if(msg.value > MINIMUM_DEPOSIT) {
+            revert PIGGYBANK__MUST_BE_GREATER_THAN_MIN_DEPOSIT();
+        }
+        if(!hasDeposited[msg.sender]){
+            hasDeposited[msg.sender] = true;
+        }
         depositor[msg.sender] += msg.value;
-        hasDeposited[msg.sender] = true;
         emit Deposit(msg.sender, msg.value);
     }
 
@@ -37,7 +43,9 @@ contract PiggyBankWithYield is ReentrancyGuard {
         depositor[msg.sender] -= amount;
 
         (bool success,) = _to.call{value: amount}("");
-        require(success, "Transfer failed");
+        if(!success){
+            revert PIGGYBANK__TRANSFER_FAIL();
+        }
 
         emit Withdraw(_to, amount);
 
@@ -59,7 +67,9 @@ contract PiggyBankWithYield is ReentrancyGuard {
     }
 
     receive() external payable {
-        require(msg.value > MINIMUM_DEPOSIT, "You must send some ether");
+        if(msg.value > MINIMUM_DEPOSIT) {
+            revert PIGGYBANK__MUST_BE_GREATER_THAN_MIN_DEPOSIT();
+        }
         depositor[msg.sender] += msg.value;
         hasDeposited[msg.sender] = true;
         emit Deposit(msg.sender, msg.value);
