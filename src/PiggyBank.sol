@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
@@ -13,6 +13,7 @@ contract PiggyBank is ReentrancyGuard {
     error PIGGYBANK__DID_NOT_JOINED();
     error PIGGYBANK__MUST_BE_GREATER_THAN_MIN_DEPOSIT();
     error PIGGYBANK__TRANSFER_FAIL();
+    error PIGGYBANK__WRONG_ADDRESS();
 
     struct Lock {
         uint256 amount;
@@ -59,11 +60,14 @@ contract PiggyBank is ReentrancyGuard {
      * Emits a {Withdraw} event on success.
      */
     function withdraw(uint256 amount, address _to) external nonReentrant {
+        if (_to == address(0)) {
+            revert PIGGYBANK__WRONG_ADDRESS();
+        }
         if (!hasDeposited[msg.sender]) {
             revert PIGGYBANK__DID_NOT_JOINED();
         }
 
-        Lock storage lock = depositorVault[msg.sender];
+        Lock storage lock = depositorVault[_to];
 
         if (lock.amount >= amount) {
             revert PIGGYBANK__INSUFFICIENT_BALANCE();
@@ -78,20 +82,20 @@ contract PiggyBank is ReentrancyGuard {
 
         emit Withdraw(_to, amount);
 
-        if (depositorVault[msg.sender] == 0) {
+        if (lock.amount == 0) {
             hasDeposited[msg.sender] = false;
         }
     }
 
-    function getBalance() public view returns (uint256) {
-        return depositorVault[msg.sender];
+    function getBalance() external view returns (uint256) {
+        return depositorVault[msg.sender].amount;
     }
 
-    function getHasDeposited() public view returns (bool) {
+    function getHasDeposited() external view returns (bool) {
         return hasDeposited[msg.sender];
     }
 
-    function getMinimumDeposit() public pure returns (uint256) {
+    function getMinimumDeposit() external pure returns (uint256) {
         return MINIMUM_DEPOSIT;
     }
 
